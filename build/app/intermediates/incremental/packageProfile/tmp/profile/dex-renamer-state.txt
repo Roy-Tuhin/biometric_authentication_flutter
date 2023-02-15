@@ -1,0 +1,4 @@
+#Wed Feb 15 16:03:03 IST 2023
+base.0=C\:\\Users\\TUHIN WLH\\Downloads\\biometric_authentication_flutter\\build\\app\\intermediates\\dex\\profile\\mergeDexProfile\\classes.dex
+renamed.0=classes.dex
+path.0=classes.dex
