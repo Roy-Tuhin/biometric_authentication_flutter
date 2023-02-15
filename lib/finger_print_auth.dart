@@ -133,7 +133,7 @@ class _FingerprintAuthState extends State<FingerprintAuth> {
           elevation: 0,
           systemOverlayStyle: const SystemUiOverlayStyle(
         statusBarColor: Colors.white,
-        statusBarIconBrightness: Brightness.light, // For Android (dark icons)
+        statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
         statusBarBrightness: Brightness.light, // For iOS (dark icons)
       ),
         ),

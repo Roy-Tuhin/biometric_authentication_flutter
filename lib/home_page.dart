@@ -1,5 +1,7 @@
 
 
+// ignore_for_file: prefer_const_constructors
+
 import 'package:BioAuth/finger_print_auth.dart';
 import 'package:BioAuth/main.dart';
 import 'package:flutter/material.dart';
@@ -9,20 +11,35 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: Color(0xffEFF1F3),
-        appBar: AppBar(
-          centerTitle: true,
-          elevation: 0,
-         backgroundColor: Colors.white,
-          title: Text(
-            'Home Page',
-            style: TextStyle(color: Colors.black),
-          ),
-           systemOverlayStyle: const SystemUiOverlayStyle(
-        statusBarColor: Colors.white,
-        statusBarIconBrightness: Brightness.light, // For Android (dark icons)
-        statusBarBrightness: Brightness.light, // For iOS (dark icons)
-      ),
-        ),
+        appBar:AppBar(
+  // ignore: prefer_const_constructors
+              title: Text(
+                "Home Page",
+                style: TextStyle(
+                  fontFamily: "Muli",
+                  color: Colors.black,
+                  fontSize:28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              centerTitle: true,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              systemOverlayStyle: const SystemUiOverlayStyle(
+                statusBarColor: Colors.white,
+                statusBarIconBrightness: Brightness.dark,
+                statusBarBrightness: Brightness.light,
+              ),
+              flexibleSpace: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [Color(0xFFf0f0f0), Colors.white],
+                  ),
+                ),
+              ),
+            ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
