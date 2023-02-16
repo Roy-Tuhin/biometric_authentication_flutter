@@ -207,7 +207,6 @@ class _FingerprintAuthState extends State<FingerprintAuth>{
                                   
                                    SizedBox(height: screenHeightVar * 0.05),
         
-                                  /////////////////Email///////////////////////////
                                  Container(
                                       decoration: BoxDecoration(
                                         // color: kSecondaryColor.withOpacity(0.1),
@@ -219,10 +218,9 @@ class _FingerprintAuthState extends State<FingerprintAuth>{
                                         padding:
                                             EdgeInsets.symmetric(horizontal: 8.0),
         
-                                        ////////////////////////Enter email//////////////////////////////
+
         
                                         child: TextFormField(
-                                         // controller: emailController,
                                           keyboardType: TextInputType.text,
         
                                           decoration: InputDecoration(
@@ -241,43 +239,7 @@ class _FingerprintAuthState extends State<FingerprintAuth>{
                                                       Colors.black.withOpacity(0.4)),
                                               prefixIcon:
                                                   Icon(Icons.mail, size: 13.0)),
-        
-                                          // decoration: InputDecoration(
-                                          //     prefixIcon: Icon(
-                                          //       Icons.mail,
-                                          //       size: 13.0,
-                                          //     ),
-                                          //     fillColor: Color(0XFF6A62B7).withAlpha(50),
-                                          //     border: InputBorder.none,
-                                          //     hintText: 'Enter your Email | Phone no.',
-                                          //     hintStyle: TextStyle(color: Colors.grey),
-                                          //     //labelText: 'Enter your Email | Phone no.',
-                                          //     labelStyle: TextStyle(
-                                          //         color: Colors.grey,
-                                          //         fontSize: 13,
-                                          //         fontFamily: 'Muli')),
-        
-                                          //=======================================================
-                                          validator: (value) {
-                                            
-                                          },
-                                          //=======================================================
-        
-                                          // validator: (value) {
-                                          //   if (!RegExp(
-                                          //           "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-                                          //       .hasMatch(value!)) {
-                                          //     return 'Please enter a valid Email';
-                                          //   } else if (value == null) {
-                                          //     emailController =
-                                          //         '' as TextEditingController;
-                                          //   }
-                                          //   return null;
-                                          // },
-                                          // onSaved: (name) {
-                                          //   emailController =
-                                          //       name as TextEditingController;
-                                          // },
+
                                         ),
                                       ),
                                     ),
