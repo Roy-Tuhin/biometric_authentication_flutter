@@ -11,7 +11,7 @@ class FingerprintAuth extends StatefulWidget {
   _FingerprintAuthState createState() => _FingerprintAuthState();
 }
 
-class _FingerprintAuthState extends State<FingerprintAuth> {
+class _FingerprintAuthState extends State<FingerprintAuth> with WidgetsBindingObserver{
   final auth = LocalAuthentication();
   String authorized = " not authorized";
   bool _canCheckBiometric = false;
@@ -34,6 +34,16 @@ class _FingerprintAuthState extends State<FingerprintAuth> {
     }
 
     try {
+
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+  if (state == AppLifecycleState.resumed) {
+      // App resumed, so authenticate again
+      _authenticate();
+    }
+    
+  }
+
+
       authenticated = await auth.authenticate(
         localizedReason: localizedReason,
         useErrorDialogs: true,
@@ -91,8 +101,14 @@ class _FingerprintAuthState extends State<FingerprintAuth> {
   void initState() {
     _checkBiometric();
     _getAvailableBiometric();
+     WidgetsBinding.instance.addObserver(this);
 
     super.initState();
+  }
+    @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override

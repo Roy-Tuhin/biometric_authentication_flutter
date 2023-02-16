@@ -7,7 +7,35 @@ import 'package:BioAuth/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage>with WidgetsBindingObserver {
+
+  @override
+void initState() {
+  super.initState();
+  WidgetsBinding.instance.addObserver(this);
+}
+@override
+void dispose() {
+  WidgetsBinding.instance.removeObserver(this);
+  super.dispose();
+}
+
+@override
+void didChangeAppLifecycleState(AppLifecycleState state) {
+  if (state == AppLifecycleState.resumed) {
+    // Prompt the user to authenticate again
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => FingerprintAuth()),
+    );
+  }
+}
+
+
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: Color(0xffEFF1F3),
@@ -26,7 +54,7 @@ class HomePage extends StatelessWidget {
               backgroundColor: Colors.transparent,
               elevation: 0,
               systemOverlayStyle: const SystemUiOverlayStyle(
-                statusBarColor: Colors.white,
+                statusBarColor: Color(0xffEFF1F3),
                 statusBarIconBrightness: Brightness.dark,
                 statusBarBrightness: Brightness.light,
               ),
