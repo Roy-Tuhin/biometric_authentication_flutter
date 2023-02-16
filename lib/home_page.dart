@@ -56,16 +56,26 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       return; // No biometric authentication available
     }
 
-    try {
-      authenticated = await auth.authenticate(
-        localizedReason: localizedReason,
-        useErrorDialogs: true,
-        stickyAuth: true,
-        biometricOnly: true,
-      );
-    } on PlatformException catch (e) {
-      print(e);
+
+    while (!authenticated){
+      try {
+        authenticated = await auth.authenticate(
+          localizedReason: localizedReason,
+          useErrorDialogs: true,
+          stickyAuth: true,
+          biometricOnly: true,
+        );
+      } on PlatformException catch (e) {
+        print(e);
+      }
+
+      setState(() {
+        authorized = authenticated ? "Authorized success" : "Failed to authenticate";
+        print(authorized);
+      });
     }
+
+   
 
     setState(() {
       authorized = authenticated ? "Authorized success" : "Failed to authenticate";
