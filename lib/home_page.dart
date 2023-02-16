@@ -70,41 +70,21 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   await showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text('Authentication'),
-      content: Text('Please select your authentication method'),
+      title: Center(child: Text('Please authentication with MPIN or Fingerprint')),
+      content: TextField(
+        //hinttext
+              decoration: InputDecoration(hintText: 'Enter your 6 digit MPIN'),
+             obscureText: true,
+             maxLength: 6,
+             onChanged: (value) {
+               if (_isCorrectMpin(value)) {
+                 authenticated = true;
+                 Navigator.of(context).pop(); // Dismiss the alert dialog
+               }
+             },
+           ),
       actions: [
-        TextButton(
-          onPressed: () async{
-            print('MPIN button pressed'); // Check if the button is being pressed
-            _selectedAuthMethod = 'MPIN';    
-            //close the alert box
-            Navigator.of(context).pop();
 
-
-            //pin enter dialog box
-            try {
-              await showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text('Enter MPIN'),
-                  content: TextField(
-                    obscureText: true,
-                    maxLength: 6,
-                    onChanged: (value) {
-                      if (_isCorrectMpin(value)) {
-                        authenticated = true;
-                        Navigator.of(context).pop(); // Dismiss the alert dialog
-                      }
-                    },
-                  ),
-                ),
-              );
-            } catch (e) {
-              print(e); // Check if any errors are being thrown
-            }
-          },
-          child: Text('MPIN'),
-        ),
             TextButton(
               onPressed: ()async {
                 _selectedAuthMethod = 'Fingerprint';
