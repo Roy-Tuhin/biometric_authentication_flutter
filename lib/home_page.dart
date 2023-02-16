@@ -3,7 +3,6 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:BioAuth/finger_print_auth.dart';
-import 'package:BioAuth/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
@@ -20,6 +19,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   late List<BiometricType> _availableBiometric;
   bool face = false;
   bool fingerprint = false;
+  String _selectedAuthMethod = 'Fingerprint'; // Default auth method is fingerprint
 
   @override
   void initState() {
@@ -38,49 +38,114 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _authenticateWithFingerprint();
+      _authenticateWithSelectedMethod();
     }
   }
 
-  Future<void> _authenticateWithFingerprint() async {
+  Future<void> _authenticateWithSelectedMethod() async {
     bool authenticated = false;
-
     String localizedReason;
-    if (face && fingerprint) {
-      localizedReason = "Scan your face or fingerprint to authenticate";
-    } else if (face) {
-      localizedReason = "Scan your face to authenticate";
-    } else if (fingerprint) {
-      localizedReason = "Scan your fingerprint to authenticate";
-    } else {
-      return; // No biometric authentication available
+
+    if (_selectedAuthMethod == 'Fingerprint') {
+      if (fingerprint) {
+        localizedReason = "Scan your fingerprint to authenticate";
+      } else {
+        return; // Fingerprint authentication not available
+      }
+    } else if (_selectedAuthMethod == 'MPIN') {
+      if (_isCorrectMpin('123456')) {
+        authenticated = true;
+      } else {
+        authorized = "Failed to authenticate with MPIN";
+      }
+      setState(() {
+        authorized = authenticated ? "Authorized success" : "Failed to authenticate";
+        print(authorized);
+      });
+      return;
     }
 
+   while (!authenticated) {
+  //alert box with  two button in flutter  =>MPIN and finger print
+  await showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Authentication'),
+      content: Text('Please select your authentication method'),
+      actions: [
+        TextButton(
+          onPressed: () async{
+            print('MPIN button pressed'); // Check if the button is being pressed
+            _selectedAuthMethod = 'MPIN';    
+            //close the alert box
+            Navigator.of(context).pop();
 
-    while (!authenticated){
-      try {
-        authenticated = await auth.authenticate(
-          localizedReason: localizedReason,
-          useErrorDialogs: true,
-          stickyAuth: true,
-          biometricOnly: true,
-        );
-      } on PlatformException catch (e) {
-        print(e);
-      }
 
+            //pin enter dialog box
+            try {
+              await showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('Enter MPIN'),
+                  content: TextField(
+                    obscureText: true,
+                    maxLength: 6,
+                    onChanged: (value) {
+                      if (_isCorrectMpin(value)) {
+                        authenticated = true;
+                        Navigator.of(context).pop(); // Dismiss the alert dialog
+                      }
+                    },
+                  ),
+                ),
+              );
+            } catch (e) {
+              print(e); // Check if any errors are being thrown
+            }
+          },
+          child: Text('MPIN'),
+        ),
+            TextButton(
+              onPressed: ()async {
+                _selectedAuthMethod = 'Fingerprint';
+                try {
+                  authenticated = await auth.authenticate(
+                    localizedReason: "localizedReason",
+                    useErrorDialogs: true,
+                    stickyAuth: true,
+                    biometricOnly: true,
+                  );
+                   if (authenticated) {
+                  Navigator.of(context).pop(); // Dismiss the alert dialog
+                }
+                } on PlatformException catch (e) {
+                  print(e);
+                }
+
+              },
+              child: Text('Fingerprint'),
+            ),
+            //cancel button to exit the app
+            TextButton(
+              onPressed: () {
+                SystemNavigator.pop();
+              },
+              child: Text('Cancel'),
+            ),
+          ],
+        ),
+      );
+     
       setState(() {
         authorized = authenticated ? "Authorized success" : "Failed to authenticate";
         print(authorized);
       });
     }
+  }
 
-   
-
-    setState(() {
-      authorized = authenticated ? "Authorized success" : "Failed to authenticate";
-      print(authorized);
-    });
+  bool _isCorrectMpin(String mpin) {
+    // Check if the given MPIN matches the actual MPIN (in this case, "123456")
+    return mpin == '123456';
   }
 
   Future<void> _checkBiometric() async {
@@ -99,7 +164,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     });
   }
 
-  Future _getAvailableBiometric() async {
+  Future<void> _getAvailableBiometric() async {
     List<BiometricType> availableBiometric = [];
 
     try {
