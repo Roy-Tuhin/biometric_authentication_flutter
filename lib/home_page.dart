@@ -6,35 +6,104 @@ import 'package:BioAuth/finger_print_auth.dart';
 import 'package:BioAuth/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 
 class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>with WidgetsBindingObserver {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
+  final auth = LocalAuthentication();
+  String authorized = " not authorized";
+  bool _canCheckBiometric = false;
+  late List<BiometricType> _availableBiometric;
+  bool face = false;
+  bool fingerprint = false;
 
   @override
-void initState() {
-  super.initState();
-  WidgetsBinding.instance.addObserver(this);
-}
-@override
-void dispose() {
-  WidgetsBinding.instance.removeObserver(this);
-  super.dispose();
-}
-
-@override
-void didChangeAppLifecycleState(AppLifecycleState state) {
-  if (state == AppLifecycleState.resumed) {
-    // Prompt the user to authenticate again
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => FingerprintAuth()),
-    );
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _checkBiometric();
+    _getAvailableBiometric();
   }
-}
 
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _authenticateWithFingerprint();
+    }
+  }
+
+  Future<void> _authenticateWithFingerprint() async {
+    bool authenticated = false;
+
+    String localizedReason;
+    if (face && fingerprint) {
+      localizedReason = "Scan your face or fingerprint to authenticate";
+    } else if (face) {
+      localizedReason = "Scan your face to authenticate";
+    } else if (fingerprint) {
+      localizedReason = "Scan your fingerprint to authenticate";
+    } else {
+      return; // No biometric authentication available
+    }
+
+    try {
+      authenticated = await auth.authenticate(
+        localizedReason: localizedReason,
+        useErrorDialogs: true,
+        stickyAuth: true,
+        biometricOnly: true,
+      );
+    } on PlatformException catch (e) {
+      print(e);
+    }
+
+    setState(() {
+      authorized = authenticated ? "Authorized success" : "Failed to authenticate";
+      print(authorized);
+    });
+  }
+
+  Future<void> _checkBiometric() async {
+    bool canCheckBiometric = false;
+
+    try {
+      canCheckBiometric = await auth.canCheckBiometrics;
+    } on PlatformException catch (e) {
+      print(e);
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _canCheckBiometric = canCheckBiometric;
+    });
+  }
+
+  Future _getAvailableBiometric() async {
+    List<BiometricType> availableBiometric = [];
+
+    try {
+      availableBiometric = await auth.getAvailableBiometrics();
+    } on PlatformException catch (e) {
+      print(e);
+    }
+
+    setState(() {
+      _availableBiometric = availableBiometric;
+      face = availableBiometric.contains(BiometricType.face);
+      fingerprint = availableBiometric.contains(BiometricType.fingerprint);
+    });
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
