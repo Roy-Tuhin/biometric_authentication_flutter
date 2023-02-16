@@ -68,17 +68,19 @@ void didChangeAppLifecycleState(AppLifecycleState state) {
                 ),
               ),
             ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-          //add asset image
-            Image.asset('assets/images/408.png',fit: BoxFit.cover,),
-            SizedBox(height: 100),
-            Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: buildLogoutButton(context),
-            )
-          ],
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+            //add asset image
+              Image.asset('assets/images/408.png',fit: BoxFit.cover,),
+              SizedBox(height: 100),
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: buildLogoutButton(context),
+              )
+            ],
+          ),
         ),
       );
 
