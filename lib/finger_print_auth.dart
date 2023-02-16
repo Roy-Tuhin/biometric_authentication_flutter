@@ -12,6 +12,9 @@ class FingerprintAuth extends StatefulWidget {
 }
 
 class _FingerprintAuthState extends State<FingerprintAuth>{
+  //6 digit pin code
+  String pin = "123456";
+  TextEditingController pinController = TextEditingController();
   final auth = LocalAuthentication();
   String authorized = " not authorized";
   bool _canCheckBiometric = false;
@@ -92,6 +95,17 @@ class _FingerprintAuthState extends State<FingerprintAuth>{
     _checkBiometric();
     _getAvailableBiometric();
     super.initState();
+
+        pinController.addListener(() {
+      // Check if the entered MPIN is correct
+      if (pinController.text == '123456') {
+        // Navigate to HomePage if the MPIN is correct
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      }
+    });
   }
 
 
@@ -209,7 +223,6 @@ class _FingerprintAuthState extends State<FingerprintAuth>{
         
                                  Container(
                                       decoration: BoxDecoration(
-                                        // color: kSecondaryColor.withOpacity(0.1),
                                         color: Color(0xFFf0f0f0),
                                         borderRadius: BorderRadius.circular(15),
                                       ),
@@ -222,7 +235,8 @@ class _FingerprintAuthState extends State<FingerprintAuth>{
         
                                         child: TextFormField(
                                           keyboardType: TextInputType.text,
-        
+                                          maxLength: 6,
+                                          controller: pinController,
                                           decoration: InputDecoration(
                                               contentPadding: EdgeInsets.symmetric(
                                                   horizontal:
@@ -233,167 +247,52 @@ class _FingerprintAuthState extends State<FingerprintAuth>{
                                               border: InputBorder.none,
                                               focusedBorder: InputBorder.none,
                                               enabledBorder: InputBorder.none,
-                                              hintText: "Enter your Email",
+                                              hintText: "Use your 6 digit MPIN",
                                               hintStyle: TextStyle(
                                                   color:
                                                       Colors.black.withOpacity(0.4)),
                                               prefixIcon:
-                                                  Icon(Icons.mail, size: 13.0)),
+                                                  Icon(Icons.pin, size: 13.0)),
 
                                         ),
                                       ),
                                     ),
                                   
-                                  Container(
-                                      decoration: BoxDecoration(
-                                        // color: kSecondaryColor.withOpacity(0.1),
-                                        color: Color(0xFFf0f0f0),
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      margin: EdgeInsets.all(10),
-                                      child: Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(horizontal: 8.0),
-        
-                                        ////////////////////////////Password//////////////////////////////
-        
-                                        child: TextFormField(
-        
-        
-                                          decoration: InputDecoration(
-                                              suffixIcon: IconButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                  
-                                                  });
-                                                },
-                                                color: Theme.of(context)
-                                                    .accentColor
-                                                    .withOpacity(0.4),
-                                                icon: Icon(
-                                                 
-                                                     
-                                                     Icons.visibility,
-                                                  size: 17,
-                                                ),
-                                              ),
-                                              contentPadding: EdgeInsets.symmetric(
-                                                  horizontal:
-                                                      getProportionateScreenWidth(20),
-                                                  vertical:
-                                                      getProportionateScreenWidth(
-                                                          15)),
-                                              border: InputBorder.none,
-                                              focusedBorder: InputBorder.none,
-                                              enabledBorder: InputBorder.none,
-                                              hintText: "Enter your password",
-                                              hintStyle: TextStyle(
-                                                  color:
-                                                      Colors.black.withOpacity(0.4)),
-                                              prefixIcon:
-                                                  Icon(Icons.lock, size: 13.0)),
-        
-                                          // decoration: InputDecoration(
-                                          //   prefixIcon: Icon(
-                                          //     Icons.lock,
-                                          //     size: 13.0,
-                                          //   ),
-                                          // suffixIcon: IconButton(
-                                          //   onPressed: () {
-                                          //     setState(() {
-                                          //       hidepassword = !hidepassword;
-                                          //     });
-                                          //   },
-                                          //   color: Theme.of(context)
-                                          //       .accentColor
-                                          //       .withOpacity(0.4),
-                                          //   icon: Icon(
-                                          //     hidepassword
-                                          //         ? Icons.visibility_off
-                                          //         : Icons.visibility,
-                                          //     size: 17,
-                                          //   ),
-                                          // ),
-                                          // fillColor: Colors.white,
-                                          // border: InputBorder.none,
-                                          // hintText: 'Enter your password',
-                                          // hintStyle: TextStyle(
-                                          //     color: Colors.grey, fontFamily: 'Muli'),
-                                          // labelText: 'Enter your password',
-                                          // labelStyle: TextStyle(
-                                          //     color: Colors.grey,
-                                          //     fontSize: 13,
-                                          //     fontFamily: 'Muli'),
-                                          // ),
-        
-                                          validator: (value) {
-                                            if (value!.isEmpty) {
-                                              return 'Enter password';
-                                            } else {
-                                              return null;
-                                            }
-                                          },
-                                          // onSaved: (pass) {
-                                          //   passwordontroller =
-                                          //       pass as TextEditingController;
-                                          // },
-                                        ),
-                                      ),
-                                    ),
+                                  
                                  
-                                  Row(
-                                      children: [
-                                        Checkbox(
-                                          value: true,
-                                          activeColor: Colors.green,
-                                          onChanged: (value) {
-                                            setState(() {
-                                            //  remember = value;
-                                            });
-                                          },
-                                        ),
-                                        Text("Remember me"),
-                                        Spacer(),
-                                        GestureDetector(
-                                          onTap: () {
-                                          
-                                          },
-                                          // Navigator.pushNamed( context, ForgotPasswordScreen.routeName),
-                                          child: Text(
-                                            "Forgot Password ?",
-                                            style: TextStyle(fontFamily: "Muli"),
-                                          ),
-                                        )
-                                      ],
-                                    ),
+                                
                                   
                                   InkWell(
-                                    // onTap: validate,
                                     onTap: () {
                                     _authenticate();
-        
-                                      // // validate();
-                                      // Navigator.push(
-                                      //     context,
-                                      //     MaterialPageRoute(
-                                      //         builder: (context) => HomeScreen()));
                                     },
                                     child: Container(
                                         width: double.infinity,
                                         height: getProportionateScreenHeight(56),
                                         margin: const EdgeInsets.all(5.0),
                                         alignment: Alignment.center,
-                                        //  height: blockSizeVertical*7.5,
-                                        //  width: blockSizeHorizontal*60,
-                                        // margin: EdgeInsets.all(5),
                                         decoration: BoxDecoration(
                                             shape: BoxShape.rectangle,
                                             borderRadius: BorderRadius.circular(20),
-                                            color: Color(0XFF385277)),
-                                        child: Text(
-                                          'Authenticate',
-                                          style: TextStyle(
-                                              color: Colors.white, fontSize: 18),
+                                            color: Color(0xFFf0f0f0)),
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                             Container(
+                                              height: getProportionateScreenHeight(180),
+                                               child: Lottie.network(
+                                                  'https://assets1.lottiefiles.com/packages/lf20_idfHDi.json',
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            Text(
+                                              'Use Biometric',
+                                              style: TextStyle(
+                                                  color: Colors.black, ),
+                                            ),
+
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -403,49 +302,7 @@ class _FingerprintAuthState extends State<FingerprintAuth>{
                             ),
         
                             //===============================================================================================================
-                            SizedBox(height: screenHeightVar * 0.02),
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.center,
-                            //   children: [
-                            //     SocalCard(
-                            //       icon: "assets/icons/google-icon.svg",
-                            //       press: () {},
-                            //     ),
-                            //     SocalCard(
-                            //       icon: "assets/icons/facebook-2.svg",
-                            //       press: () {},
-                            //     ),
-                            //     SocalCard(
-                            //       icon: "assets/icons/twitter.svg",
-                            //       press: () {},
-                            //     ),
-                            //   ],
-                            // ),
-                            // SizedBox(height: screenHeightVar * 0.02),
-                            //NoAccountText(),
-         Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Don’t have an account? ",
-                                    style: TextStyle(
-                                       ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                     
-                                    },
-                                    //Navigator.pushNamed(context, SignUpScreen.routeName),
-                                    child: Text(
-                                      "Sign Up",
-                                      style: TextStyle(
-                                          
-                                         ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            
+                            SizedBox(height: screenHeightVar * 0.02),      
                             SizedBox(height: screenHeightVar * 0.02),
                           ],
                         ),
